@@ -1,8 +1,10 @@
 """DCM (DNS Clustering Module) was designed to perform cluster analysis on
 the Los Alamos National Laboratory DNS data from the cyber security dataset
-(available at https://csr.lanl.gov/data/cyber1/). It contains the option of
-performing a more general analysis on sliding time based windows on the top n
-resolved computers.
+(available at https://csr.lanl.gov/data/cyber1/). The clustering is based on 
+finding the number of connections a computer receives within a given timeframe
+and then calculating statistical features, which are then used for clustering.
+This module contains the option of performing a more general analysis on sliding 
+time based windows on the top n resolved computers.
 
 More features, such as different clustering methods, will likely be added in the
 immediate future."""
@@ -22,7 +24,8 @@ def GetTopn(data,n=50):
 
 
 def GetConnectionStats(group, extended_features=False):
-    """Calculate the statistics of a pandas df grouped by resolved computer."""
+    """Calculate the connection statistics of a pandas df grouped by resolved 
+    computer."""
     num_connections=group.time.value_counts()
     
     if extended_features:
@@ -42,7 +45,8 @@ def GetConnectionStats(group, extended_features=False):
     
     
 def DNSDFToStatsDF(dns_df, n=50, use_extended_features=False):
-    """Calculate statistics of resolved computers in a DNS-like dataframe.
+    """Calculate the connection statistics of resolved computers in a DNS-like 
+    dataframe.
     
     Takes a dataframe in the same format as the original DNS data.
     Various statistical parameters are then calculated for the top n resolved
