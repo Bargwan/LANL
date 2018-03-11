@@ -41,7 +41,7 @@ def GetConnectionStats(group, extended_features=False):
     return connection_stats
     
     
-def DNSDFToStatsDF(dns_df, n=50):
+def DNSDFToStatsDF(dns_df, n=50, use_extended_features=False):
     """Calculate statistics of resolved computers in a DNS-like dataframe.
     
     Takes a dataframe in the same format as the original DNS data.
@@ -51,7 +51,8 @@ def DNSDFToStatsDF(dns_df, n=50):
     highest_resolved_computers=GetTopn(dns_df,n)
     dns_df=dns_df.loc[dns_df.computer_resolved.isin(highest_resolved_computers)]
     
-    new_df=dns_df.groupby(dns_df.computer_resolved).apply(GetConnectionStats)
+    new_df=dns_df.groupby(dns_df.computer_resolved).apply(GetConnectionStats, 
+                                            extended_features=use_extended_features)
     new_df=pd.DataFrame(new_df)
     new_df.reset_index(inplace=True)
 
@@ -89,7 +90,7 @@ def Normalize(data):
     
     
 def SlidingWindow(data, analysis_function=ClusterAnalysis, window_size=5011199,
-                    stride=1, n=50):
+                    stride=1, n=50, use_extended_features=False):
     """Applies analysis_function to sliding windows across the data.
     
     Takes in the DNS dataframe and then applies analysis_function to sliding
@@ -114,7 +115,7 @@ def SlidingWindow(data, analysis_function=ClusterAnalysis, window_size=5011199,
         highest_resolved_computers=GetTopn(current_data, n)
         highest_resolved_dns=current_data.loc[current_data.computer_resolved.isin(highest_resolved_computers)]
 
-        highest_resolved_stats=DNSDFToStatsDF(highest_resolved_dns)
+        highest_resolved_stats=DNSDFToStatsDF(highest_resolved_dns, extended_features=use_extended_features)
         
         results["Window_"+str(window_number)]=analysis_function(highest_resolved_stats)
         
@@ -127,4 +128,4 @@ def SlidingWindow(data, analysis_function=ClusterAnalysis, window_size=5011199,
             
             is_final_window=True
        
-    return results 
+    return results  
