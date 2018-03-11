@@ -1,10 +1,11 @@
-"""DCM (DNS Clustering Module) was designed to perform cluster analysis on
-the Los Alamos National Laboratory DNS data from the cyber security dataset
-(available at https://csr.lanl.gov/data/cyber1/). The clustering is based on 
-finding the number of connections a computer receives within a given timeframe
-and then calculating statistical features, which are then used for clustering.
-This module contains the option of performing a more general analysis on sliding 
-time based windows on the top n resolved computers.
+"""DCM (DNS Clustering Module) was designed to perform cluster analysis on the 
+Los Alamos National Laboratory DNS data from the cyber security dataset
+(available at https://csr.lanl.gov/data/cyber1/). The clustering is based on the 
+number of connections a computer receives within a given timeframe along with 
+associated statistical features.
+
+This module also contains the option of performing a more general analysis using 
+sliding time based windows on the top n resolved computers.
 
 More features, such as different clustering methods, will likely be added in the
 immediate future."""
@@ -65,6 +66,7 @@ def DNSDFToStatsDF(dns_df, n=50, use_extended_features=False):
     stats_df=pd.DataFrame(stats)
 
     stats_df["computer_resolved"]=new_df.computer_resolved
+    stats_df=stats_df.sort_values(by="count",ascending=False)
     
     return stats_df
     
@@ -119,7 +121,7 @@ def SlidingWindow(data, analysis_function=ClusterAnalysis, window_size=5011199,
         highest_resolved_computers=GetTopn(current_data, n)
         highest_resolved_dns=current_data.loc[current_data.computer_resolved.isin(highest_resolved_computers)]
 
-        highest_resolved_stats=DNSDFToStatsDF(highest_resolved_dns, extended_features=use_extended_features)
+        highest_resolved_stats=DNSDFToStatsDF(highest_resolved_dns, use_extended_features=use_extended_features)
         
         results["Window_"+str(window_number)]=analysis_function(highest_resolved_stats)
         
