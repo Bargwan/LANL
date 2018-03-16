@@ -32,7 +32,7 @@ def AssignRedTeamEvents(dns_df, redteam_df):
         
         start+=add_start
         
-        terminate_if_no_match=False
+        stop_increment=False
         
         for j in range(start,dns_rows):
             
@@ -42,9 +42,9 @@ def AssignRedTeamEvents(dns_df, redteam_df):
             
                 dns_df.loc[j].malicious=1
                 print("SUCCESS!")
-                terminate_if_no_match=True
+                stop_increment=True
                 
-            elif terminate_if_no_match==False:
+            elif stop_increment==False:
                 
                 add_start+=1
                 
